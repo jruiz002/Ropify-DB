@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION 	disminuir_stock()
 RETURNS TRIGGER AS $$
 BEGIN
  UPDATE Productos
- SET stock = stock - NEW.stock 
+ SET stock = stock - NEW.cantidad 
  WHERE id_producto = NEW.id_producto;
  
  RETURN NEW;
@@ -23,6 +23,8 @@ BEGIN
 	UPDATE Productos
 	SET stock = stock + NEW.cantidad
 	WHERE id_producto = id_producto;
+
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -38,6 +40,8 @@ BEGIN
 	UPDATE Ventas
 	SET total = total + NEW.subtotal
 	WHERE id_venta = NEW.id_venta;
+
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

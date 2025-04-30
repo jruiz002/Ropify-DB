@@ -324,12 +324,14 @@ DECLARE
     i INT;
 BEGIN
     FOR i IN 1..100 LOOP
-        INSERT INTO Ventas (id_cliente, id_empleado) VALUES (
+        INSERT INTO Ventas (id_cliente, id_empleado, fecha_venta) VALUES (
             FLOOR(RANDOM() * 30 + 1),
-            FLOOR(RANDOM() * 25 + 1)
+            FLOOR(RANDOM() * 25 + 1),
+            CURRENT_DATE - (TRUNC(RANDOM() * 730))::INT
         );
     END LOOP;
 END$$;
+
 
 
 -- Insertar DetalleVenta

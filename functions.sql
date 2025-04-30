@@ -1,13 +1,3 @@
---------------------------------------------REPORTES--------------------------------------------
-CREATE OR REPLACE FUNCTION reporte_top_clientes(fecha_inicio DATE, fecha_fin DATE, cantidad_usuarios INTEGER, orden_usuarios TEXT)
-RETURNS TABLE (nombre_usuario TEXT, total_comprado NUMERIC) AS
-$$
-BEGIN
-	
-END;
-$$
-LANGUAGE plpgsql;
-
 --------------------------1. Reporte Muestra los empleados que han vendido más en un período determinado--------------------------
 CREATE OR REPLACE FUNCTION top_ventas_por_empleado(
     fecha_inicio TIMESTAMP,
@@ -148,4 +138,41 @@ SELECT * FROM top_proveedores(
     5
 );
 
+
+
+
+SELECT * FROM reporte_top_clientes('2022-01-01', '2025-05-01', 15, 'ASC');
+
+
+--------------------------4. Listar el top compras por cliente--------------------------
+CREATE OR REPLACE FUNCTION reporte_top_clientes(fecha_inicio DATE, fecha_fin DATE, cantidad_usuarios INTEGER, orden_usuarios TEXT)
+RETURNS TABLE (nombre_usuario TEXT, total_comprado NUMERIC) AS
+$$
+BEGIN
+	IF orden_usuarios ILIKE 'ASC' THEN 
+		RETURN QUERY
+		SELECT c.nombre::TEXT, SUM(dv.cantidad*dv.precio_unitario) as total_comprado
+		FROM Clientes c
+		JOIN Ventas v ON v.id_cliente = c.id_cliente
+		JOIN DetalleVenta dv ON dv.id_venta = v.id_venta
+		WHERE v.fecha_venta BETWEEN fecha_inicio AND fecha_fin
+		GROUP BY c.nombre 
+		ORDER BY SUM(dv.cantidad*dv.precio_unitario) ASC
+		LIMIT cantidad_usuarios;
+	ELSIF orden_usuarios ILIKE 'DESC' THEN 
+		RETURN QUERY
+		SELECT c.nombre::TEXT, SUM(dv.cantidad*dv.precio_unitario) as total_comprado
+		FROM Clientes c
+		JOIN Ventas v ON v.id_cliente = c.id_cliente
+		JOIN DetalleVenta dv ON dv.id_venta = v.id_venta
+		WHERE v.fecha_venta BETWEEN fecha_inicio AND fecha_fin
+		GROUP BY c.nombre 
+		ORDER BY SUM(dv.cantidad*dv.precio_unitario) DESC
+		LIMIT cantidad_usuarios;
+	ELSE
+		RAISE EXCEPTION 'Valor inválido para orden_usuarios: debe ser ''ASC'' o ''DESC''';
+	END IF;
+END;
+$$
+LANGUAGE plpgsql;
 

@@ -1,3 +1,14 @@
+DROP TABLE IF EXISTS DetalleVenta CASCADE;
+DROP TABLE IF EXISTS Ventas CASCADE;
+DROP TABLE IF EXISTS EmpleadoRol CASCADE;
+DROP TABLE IF EXISTS Roles CASCADE;
+DROP TABLE IF EXISTS Empleados CASCADE;
+DROP TABLE IF EXISTS Clientes CASCADE;
+DROP TABLE IF EXISTS Inventario CASCADE;
+DROP TABLE IF EXISTS Proveedores CASCADE;
+DROP TABLE IF EXISTS Productos CASCADE;
+DROP TABLE IF EXISTS Categorias CASCADE;
+
 -- Tabla: Categorías
 CREATE TABLE Categorias (
     id_categoria SERIAL PRIMARY KEY,
@@ -72,7 +83,7 @@ CREATE TABLE Ventas (
     id_venta SERIAL PRIMARY KEY,
     id_cliente INT REFERENCES Clientes(id_cliente),
     id_empleado INT REFERENCES Empleados(id_empleado),
-    fecha_venta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_venta DATE,
     total NUMERIC(10,2) DEFAULT 0 CHECK (total >= 0)
 );
 

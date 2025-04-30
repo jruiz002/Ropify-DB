@@ -140,10 +140,6 @@ SELECT * FROM top_proveedores(
 
 
 
-
-SELECT * FROM reporte_top_clientes('2022-01-01', '2025-05-01', 15, 'ASC');
-
-
 --------------------------4. Listar el top compras por cliente--------------------------
 CREATE OR REPLACE FUNCTION reporte_top_clientes(fecha_inicio DATE, fecha_fin DATE, cantidad_usuarios INTEGER, orden_usuarios TEXT)
 RETURNS TABLE (nombre_usuario TEXT, total_comprado NUMERIC) AS
@@ -175,4 +171,25 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+SELECT * FROM reporte_top_clientes('2022-01-01', '2025-05-01', 15, 'ASC');
+
+
+--------------------------5. Listar ventas generales en un rango de tiempo por emleado--------------------------
+CREATE OR REPLACE FUNCTION reporte_ventas_empleado(fecha_inicio DATE, fecha_fin DATE, id_empleado_p INTEGER, moneda TEXT)
+RETURNS TABLE (nombre_empleado TEXT, total_vendido NUMERIC, moneda_p TEXT) AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT e.nombre::TEXT, SUM(v.total) AS total_vendido, moneda
+	FROM Empleados e
+	JOIN Ventas v ON v.id_empleado = e.id_empleado
+	WHERE v.fecha_venta BETWEEN fecha_inicio AND fecha_fin
+		AND e.id_empleado = id_empleado_p
+	GROUP BY e.nombre;
+END;
+$$
+LANGUAGE plpgsql;
+
+SELECT * FROM reporte_ventas_empleado('2022-01-01', '2026-05-01', 1, 'USD');
 

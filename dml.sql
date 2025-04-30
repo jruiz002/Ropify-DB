@@ -374,7 +374,7 @@ BEGIN
     END LOOP;
 END$$;
 
-/*
+
 -- Ver Categorías
 SELECT * FROM Categorias;
 
@@ -404,5 +404,5 @@ SELECT * FROM Ventas;
 
 -- Ver DetalleVenta
 SELECT * FROM DetalleVenta;
-*/
+
 
